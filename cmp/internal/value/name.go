@@ -136,27 +136,7 @@ func appendTypeName(b []byte, t reflect.Type, qualified, elideFunc bool) []byte 
 		b = append(b, '*')
 		b = appendTypeName(b, t.Elem(), qualified, false)
 	case reflect.Interface:
-		b = append(b, "interface{ "...)
-		for i := 0; i < t.NumMethod(); i++ {
-			if i > 0 {
-				b = append(b, "; "...)
-			}
-			m := t.Method(i)
-			if qualified && m.PkgPath != "" {
-				b = append(b, '"')
-				b = append(b, m.PkgPath...)
-				b = append(b, '"')
-				b = append(b, '.')
-			}
-			b = append(b, m.Name...)
-			b = appendTypeName(b, m.Type, qualified, true)
-		}
-		if b[len(b)-1] == ' ' {
-			b = b[:len(b)-1]
-		} else {
-			b = append(b, ' ')
-		}
-		b = append(b, '}')
+		b = append(b, t.String()...)
 	default:
 		panic("invalid kind: " + k.String())
 	}
